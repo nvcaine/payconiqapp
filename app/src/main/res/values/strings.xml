@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PayconiqApp</string>
+
+    <!-- Splash activity -->
+    <string name="main_description">
+        Welcome to Romuald\'s implementation of the Payconiq assignment.\nFeel free to test it.
+    </string>
+    <string name="online_button_label">Load data</string>
+    <string name="offline_button_label">Proceed offline</string>
+
+    <!-- Online activity -->
+    <string name="online_activity_title">Online view</string>
+
+    <!-- Offline activity -->
+    <string name="offline_activity_title">Offline view</string>
+
+</resources>
