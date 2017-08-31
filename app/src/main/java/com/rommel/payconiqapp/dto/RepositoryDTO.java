@@ -1,7 +1,7 @@
 package com.rommel.payconiqapp.dto;
 
 /**
- * Created by Rommel on 8/31/2017.
+ * Used to represent a singe repository data object.
  */
 public class RepositoryDTO {
 

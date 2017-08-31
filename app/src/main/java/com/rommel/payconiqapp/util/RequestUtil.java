@@ -13,7 +13,7 @@ import com.rommel.payconiqapp.interfaces.IRequestCallback;
 import org.json.JSONArray;
 
 /**
- * Created by Rommel on 8/31/2017.
+ * Helper class used to encapsulate request functionality from activity classes.
  */
 public class RequestUtil {
 
@@ -21,6 +21,12 @@ public class RequestUtil {
 
     private static RequestQueue requestQueue;
 
+    /**
+     * Perform GET request
+     * @param url the URL to call
+     * @param callback the handler to be executed on success
+     * @param context context for initializing Volley
+     */
     public static void performRequest(final String url, final IRequestCallback callback, Context context) {
 
         requestQueue = Volley.newRequestQueue(context); // do not init every time

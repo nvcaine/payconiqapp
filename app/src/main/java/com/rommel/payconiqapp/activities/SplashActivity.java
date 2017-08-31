@@ -11,11 +11,9 @@ import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.util.NetworkUtil;
 
 /**
- * Created by Rommel on 8/29/2017.
  * The initial activity displayed to the user.
  * The device connection is tested and the user is redirected accordingly.
  */
-
 public class SplashActivity extends AppCompatActivity {
 
     private static String LOG_TAG = SplashActivity.class.getName();
@@ -25,7 +23,6 @@ public class SplashActivity extends AppCompatActivity {
 
     /**
      * Redirect the user to the appropriate activity based on connectivity
-     *
      * @param view
      */
     public void showRepoList(View view) {
@@ -53,6 +50,9 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Connection available: " + connectionAvailable);
     }
 
+    /**
+     * Initialize view instances.
+     */
     private void initInterface() {
 
         onlineButton = (Button) findViewById(R.id.splash_online_button);

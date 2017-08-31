@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.rommel.payconiqapp.R;
 
 /**
- * Created by Rommel on 8/29/2017.
+ * The activity displayed if no Internet connection is available.
  */
 public class OfflineActivity extends Activity {
 

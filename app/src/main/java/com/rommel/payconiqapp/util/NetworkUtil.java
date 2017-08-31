@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by Rommel on 8/29/2017.
  * Helper class used to determine the state of the device's Internet connection.
  */
 public class NetworkUtil {

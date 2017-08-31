@@ -14,7 +14,7 @@ import com.rommel.payconiqapp.dto.RepositoryDTO;
 import java.util.ArrayList;
 
 /**
- * Created by Rommel on 8/31/2017.
+ * Custom adapter for passing repository objects to a ListView element.
  */
 public class RepositoriesAdapter extends BaseAdapter {
 
@@ -62,6 +62,11 @@ public class RepositoriesAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Set object data to item view renderer.
+     * @param view the view object
+     * @param data the data to be displayed
+     */
     private void updateItemView(View view, RepositoryDTO data) {
 
         TextView repositoryIdLabel = (TextView) view.findViewById(R.id.repository_id_label);
