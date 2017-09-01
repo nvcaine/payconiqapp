@@ -2,7 +2,6 @@ package com.rommel.payconiqapp.util;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -45,5 +44,6 @@ public class RequestUtil {
         });
 
         requestQueue.add(jsonRequest);
+        Log.d(LOG_TAG, "Request sent to URL: " + url);
     }
 }

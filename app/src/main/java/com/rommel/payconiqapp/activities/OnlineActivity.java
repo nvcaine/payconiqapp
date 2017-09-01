@@ -172,6 +172,8 @@ public class OnlineActivity extends Activity {
             repositoresList.setOnScrollListener(scrollListener);
 
             checkIfDataFullyLoaded(repositories, itemsPerPage);
+            Toast.makeText(this, "Loading complete", Toast.LENGTH_SHORT).show();
+
         }
     }
 
