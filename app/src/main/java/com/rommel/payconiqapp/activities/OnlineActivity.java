@@ -68,7 +68,7 @@ public class OnlineActivity extends Activity {
      */
     private void loadRepositories(int currentPage) {
 
-        RequestUtil.performRequest(getURLWithParams(currentPage), new IRequestCallback() {
+        RequestUtil.performRequest(getURLWithParams(currentPage), new IRequestCallback<JSONArray>() {
 
             @Override
             public void executeCallback(JSONArray jsonArray) {

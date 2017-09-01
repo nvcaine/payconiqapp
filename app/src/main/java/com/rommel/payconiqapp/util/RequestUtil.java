@@ -27,7 +27,7 @@ public class RequestUtil {
      * @param callback the handler to be executed on success
      * @param context context for initializing Volley
      */
-    public static void performRequest(final String url, final IRequestCallback callback, Context context) {
+    public static void performRequest(final String url, final IRequestCallback<JSONArray> callback, Context context) {
 
         requestQueue = Volley.newRequestQueue(context); // do not init every time
 

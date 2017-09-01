@@ -1,11 +1,9 @@
 package com.rommel.payconiqapp.interfaces;
 
-import org.json.JSONArray;
-
 /**
  * Interface for handling successful requests.
  */
-public interface IRequestCallback {
+public interface IRequestCallback<T> {
 
-    void executeCallback(JSONArray jsonArray);
+    void executeCallback(T jsonArray);
 }
