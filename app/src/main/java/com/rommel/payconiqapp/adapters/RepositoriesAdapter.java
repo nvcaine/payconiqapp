@@ -62,6 +62,10 @@ public class RepositoriesAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Add a list of repository items to the existing data set.
+     * @param data the list of repositories to be added
+     */
     public void updateDataSet(ArrayList<RepositoryObject> data) {
         this.data.addAll(data);
         this.notifyDataSetChanged();

@@ -16,11 +16,6 @@ import java.util.ArrayList;
  */
 public class OfflineActivity extends Activity {
 
-    private static String LOG_TAG = OfflineActivity.class.getName();
-
-    private ListView repositoriesList;
-    private RepositoriesAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,10 +37,8 @@ public class OfflineActivity extends Activity {
     private void init() {
 
         ArrayList<RepositoryObject> offlineRecords = RealmUtil.getInstance().getOfflineRecords();
-        adapter = new RepositoriesAdapter(this, R.layout.item_repository, offlineRecords);
-        repositoriesList = (ListView) findViewById(R.id.repositories_list);
+        RepositoriesAdapter adapter = new RepositoriesAdapter(this, R.layout.item_repository, offlineRecords);
+        ListView repositoriesList = (ListView) findViewById(R.id.repositories_list);
         repositoriesList.setAdapter(adapter);
     }
-
-
 }

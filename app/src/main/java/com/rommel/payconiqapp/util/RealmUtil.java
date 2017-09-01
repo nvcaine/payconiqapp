@@ -10,7 +10,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by Rommel on 9/1/2017.
+ * Realm wrapper to avoid adding activity dependencies.
  */
 public class RealmUtil {
 
@@ -19,9 +19,7 @@ public class RealmUtil {
     private static RealmUtil instance;
     private Realm realm;
 
-    private RealmUtil() {
-        realm = Realm.getDefaultInstance();
-    }
+    private RealmUtil() {}
 
     public static RealmUtil getInstance() {
 
@@ -29,12 +27,14 @@ public class RealmUtil {
             instance = new RealmUtil();
         }
 
+        instance.realm = Realm.getDefaultInstance();
+
         return instance;
     }
 
     /**
      * Return all records saved locally.
-     * @return
+     * @return a list of RepositoryObject items
      */
     public ArrayList<RepositoryObject> getOfflineRecords() {
 
@@ -50,14 +50,13 @@ public class RealmUtil {
     public void syncOfflineRecords(ArrayList<RepositoryObject> repositories) {
 
         for (int i = 0; i < repositories.size(); i++) {
-            RepositoryObject repository = repositories.get(i);
-            checkAndStoreRecord(repository);
+            checkAndStoreRecord(repositories.get(i));
         }
     }
 
     /**
      * Check if a record has already been saved. If not, it is added to offline records.
-     * @param repository
+     * @param repository a RepositoryObject item
      */
     private void checkAndStoreRecord(final RepositoryObject repository) {
 

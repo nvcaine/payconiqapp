@@ -2,7 +2,6 @@ package com.rommel.payconiqapp.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,8 +25,6 @@ import java.util.ArrayList;
  * The activity the user is redirected after initialization, if an Internet connection is available.
  */
 public class OnlineActivity extends Activity {
-
-    private static String LOG_TAG = OnlineActivity.class.getName();
 
     private ListView repositoriesList;
     private RepositoriesAdapter adapter;
@@ -215,17 +212,10 @@ public class OnlineActivity extends Activity {
      */
     private void checkForListUpdates(int lastIndex, int totalCount, int autoloadLimit) {
 
-        String logMessage = "NOT loading additional items.";
-
         if (lastIndex >= totalCount - autoloadLimit) {
-            logMessage = "Load additional items.";
             Toast.makeText(this, "Loading page " + (++currentPage), Toast.LENGTH_SHORT).show();
             repositoriesList.setOnScrollListener(null);
             loadRepositories(currentPage);
         }
-
-        Log.d(LOG_TAG, logMessage);
     }
-
-
 }
