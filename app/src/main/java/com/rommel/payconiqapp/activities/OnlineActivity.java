@@ -2,15 +2,16 @@ package com.rommel.payconiqapp.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
 import com.rommel.payconiqapp.interfaces.IRequestCallback;
+import com.rommel.payconiqapp.util.RealmUtil;
 import com.rommel.payconiqapp.util.RequestUtil;
 import com.rommel.payconiqapp.util.SettingsUtil;
 
@@ -25,11 +26,10 @@ import java.util.ArrayList;
  */
 public class OnlineActivity extends Activity {
 
-    private static String LOG_TAG = OnlineActivity.class.getName();
-
-    private ListView repositoresList;
-    private RepositoriesAdapter adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
+    private ListView repositoriesList;
+    private RepositoriesAdapter adapter;
     private int currentPage = 1;
+    private RequestQueue requestQueue;
 
     /**
      * Scroll listener used for loading subsequent repositories.
@@ -44,7 +44,7 @@ public class OnlineActivity extends Activity {
         @Override
         public void onScroll(AbsListView absListView, int firstIndex, int visibleCount, int totalCount) {
 
-            checkForListUpdates(repositoresList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
+            checkForListUpdates(repositoriesList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
         }
     };
 
@@ -55,16 +55,26 @@ public class OnlineActivity extends Activity {
 
         setContentView(R.layout.activity_online);
 
-        initUI();
+        init();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        RealmUtil.close();
     }
 
     /**
      * Get repository list instance and add scroll listener.
      */
-    private void initUI() {
+    private void init() {
 
-        repositoresList = (ListView) findViewById(R.id.repositories_list);
-        repositoresList.setAdapter(adapter);
+        adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
+        repositoriesList = (ListView) findViewById(R.id.repositories_list);
+        repositoriesList.setAdapter(adapter);
+        requestQueue = RequestUtil.getNewRequestQueue(this);
 
         loadRepositories(currentPage);
     }
@@ -77,21 +87,21 @@ public class OnlineActivity extends Activity {
     private void loadRepositories(int currentPage) {
 
         String url = getURLWithParams(SettingsUtil.REPOS_URL, currentPage, SettingsUtil.ITEMS_PER_PAGE);
-        RequestUtil.performRequest(url, new IRequestCallback<JSONArray>() {
+        RequestUtil.performRequest(url, requestQueue, new IRequestCallback<JSONArray>() {
 
             @Override
             public void executeCallback(JSONArray jsonArray) {
 
                 parseAndUpdateRepositories(jsonArray, SettingsUtil.ITEMS_PER_PAGE);
             }
-        }, this);
+        });
     }
 
     /**
      * Convert JSONArray object to RepositoryObject list.
      * Display list.
      *
-     * @param jsonArray the JSON data representing repositories
+     * @param jsonArray    the JSON data representing repositories
      * @param itemsPerPage number of items loaded in a single request
      */
     private void parseAndUpdateRepositories(JSONArray jsonArray, int itemsPerPage) {
@@ -105,12 +115,13 @@ public class OnlineActivity extends Activity {
         }
 
         updateRepositoriesList(repositories, itemsPerPage);
+        RealmUtil.getInstance().syncOfflineRecords(repositories);
     }
 
     /**
      * Get the URL for loading the current page data
      *
-     * @param url domain and API endpoint URL
+     * @param url          domain and API endpoint URL
      * @param currentPage  the number of the current page
      * @param itemsPerPage number of items loaded in a single request
      * @return a string representing the URL with proper parameters
@@ -169,11 +180,10 @@ public class OnlineActivity extends Activity {
 
         if (repositories != null) {
             adapter.updateDataSet(repositories);
-            repositoresList.setOnScrollListener(scrollListener);
+            repositoriesList.setOnScrollListener(scrollListener);
 
             checkIfDataFullyLoaded(repositories, itemsPerPage);
             Toast.makeText(this, "Loading complete", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -188,7 +198,7 @@ public class OnlineActivity extends Activity {
         if (repositories != null && (repositories.size() < itemsPerPage || repositories.size() == 0)) {
 
             Toast.makeText(this, "End of list reached", Toast.LENGTH_SHORT).show();
-            repositoresList.setOnScrollListener(null);
+            repositoriesList.setOnScrollListener(null);
         }
     }
 
@@ -196,21 +206,16 @@ public class OnlineActivity extends Activity {
      * Check if additional repositories should be requested.
      * If so, load the next page data and disable scroll listener.
      *
-     * @param lastIndex  the current last visible item index
-     * @param totalCount total number of items in data set
+     * @param lastIndex     the current last visible item index
+     * @param totalCount    total number of items in data set
      * @param autoloadLimit start loading next page when this index is reached by scrolling
      */
     private void checkForListUpdates(int lastIndex, int totalCount, int autoloadLimit) {
 
-        String logMessage = "NOT loading additional items.";
-
         if (lastIndex >= totalCount - autoloadLimit) {
-            logMessage = "Load additional items.";
             Toast.makeText(this, "Loading page " + (++currentPage), Toast.LENGTH_SHORT).show();
-            repositoresList.setOnScrollListener(null);
+            repositoriesList.setOnScrollListener(null);
             loadRepositories(currentPage);
         }
-
-        Log.d(LOG_TAG, logMessage);
     }
 }

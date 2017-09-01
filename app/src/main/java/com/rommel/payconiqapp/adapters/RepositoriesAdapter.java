@@ -62,6 +62,10 @@ public class RepositoriesAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Add a list of repository items to the existing data set.
+     * @param data the list of repositories to be added
+     */
     public void updateDataSet(ArrayList<RepositoryObject> data) {
         this.data.addAll(data);
         this.notifyDataSetChanged();
@@ -77,7 +81,7 @@ public class RepositoriesAdapter extends BaseAdapter {
         TextView repositoryIdLabel = (TextView) view.findViewById(R.id.repository_id_label);
         TextView repositoryNameLabel = (TextView) view.findViewById(R.id.repository_name_label);
 
-        repositoryIdLabel.setText(data.id);
-        repositoryNameLabel.setText(data.name);
+        repositoryIdLabel.setText(data.getId());
+        repositoryNameLabel.setText(data.getName());
     }
 }
