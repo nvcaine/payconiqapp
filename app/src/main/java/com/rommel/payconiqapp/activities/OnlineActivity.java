@@ -12,6 +12,7 @@ import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
 import com.rommel.payconiqapp.interfaces.IRequestCallback;
+import com.rommel.payconiqapp.util.RealmUtil;
 import com.rommel.payconiqapp.util.RequestUtil;
 import com.rommel.payconiqapp.util.SettingsUtil;
 
@@ -20,8 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 /**
  * The activity the user is redirected after initialization, if an Internet connection is available.
@@ -34,7 +33,6 @@ public class OnlineActivity extends Activity {
     private RepositoriesAdapter adapter;
     private int currentPage = 1;
     private RequestQueue requestQueue;
-    private Realm realm;
 
     /**
      * Scroll listener used for loading subsequent repositories.
@@ -68,7 +66,7 @@ public class OnlineActivity extends Activity {
 
         super.onDestroy();
 
-        realm.close();
+        RealmUtil.close();
     }
 
     /**
@@ -80,7 +78,6 @@ public class OnlineActivity extends Activity {
         repositoriesList = (ListView) findViewById(R.id.repositories_list);
         repositoriesList.setAdapter(adapter);
         requestQueue = RequestUtil.getNewRequestQueue(this);
-        realm = Realm.getDefaultInstance();
 
         loadRepositories(currentPage);
     }
@@ -121,7 +118,7 @@ public class OnlineActivity extends Activity {
         }
 
         updateRepositoriesList(repositories, itemsPerPage);
-        syncOfflineRecords(repositories, realm);
+        RealmUtil.getInstance().syncOfflineRecords(repositories);
     }
 
     /**
@@ -190,7 +187,6 @@ public class OnlineActivity extends Activity {
 
             checkIfDataFullyLoaded(repositories, itemsPerPage);
             Toast.makeText(this, "Loading complete", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -231,27 +227,5 @@ public class OnlineActivity extends Activity {
         Log.d(LOG_TAG, logMessage);
     }
 
-    private void syncOfflineRecords(ArrayList<RepositoryObject> repositories, Realm realm) {
 
-        for (int i = 0; i < repositories.size(); i++) {
-            RepositoryObject repository = repositories.get(i);
-            checkAndStoreRecord(repository, realm);
-        }
-    }
-
-    private void checkAndStoreRecord(final RepositoryObject repository, Realm realm) {
-
-        RepositoryObject storedRecord = realm.where(RepositoryObject.class).equalTo("id", repository.getId()).findFirst();
-
-        if (storedRecord == null) {
-            realm.executeTransaction(new Realm.Transaction() {
-
-                 @Override
-                 public void execute(Realm realm) {
-                     realm.insert(repository);
-                 }
-            });
-            Log.d(LOG_TAG, "Added new repository object: " + repository.getName() + " - " + repository.getId());
-        }
-    }
 }
