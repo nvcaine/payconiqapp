@@ -77,7 +77,7 @@ public class RepositoriesAdapter extends BaseAdapter {
         TextView repositoryIdLabel = (TextView) view.findViewById(R.id.repository_id_label);
         TextView repositoryNameLabel = (TextView) view.findViewById(R.id.repository_name_label);
 
-        repositoryIdLabel.setText(data.id);
-        repositoryNameLabel.setText(data.name);
+        repositoryIdLabel.setText(data.getId());
+        repositoryNameLabel.setText(data.getName());
     }
 }

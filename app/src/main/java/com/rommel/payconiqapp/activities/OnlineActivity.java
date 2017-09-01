@@ -21,6 +21,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+
 /**
  * The activity the user is redirected after initialization, if an Internet connection is available.
  */
@@ -32,6 +34,7 @@ public class OnlineActivity extends Activity {
     private RepositoriesAdapter adapter;
     private int currentPage = 1;
     private RequestQueue requestQueue;
+    private Realm realm;
 
     /**
      * Scroll listener used for loading subsequent repositories.
@@ -60,6 +63,14 @@ public class OnlineActivity extends Activity {
         initUI();
     }
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        realm.close();
+    }
+
     /**
      * Get repository list instance and add scroll listener.
      */
@@ -69,6 +80,7 @@ public class OnlineActivity extends Activity {
         repositoriesList = (ListView) findViewById(R.id.repositories_list);
         repositoriesList.setAdapter(adapter);
         requestQueue = RequestUtil.getNewRequestQueue(this);
+        realm = Realm.getDefaultInstance();
 
         loadRepositories(currentPage);
     }
@@ -95,7 +107,7 @@ public class OnlineActivity extends Activity {
      * Convert JSONArray object to RepositoryObject list.
      * Display list.
      *
-     * @param jsonArray the JSON data representing repositories
+     * @param jsonArray    the JSON data representing repositories
      * @param itemsPerPage number of items loaded in a single request
      */
     private void parseAndUpdateRepositories(JSONArray jsonArray, int itemsPerPage) {
@@ -109,12 +121,13 @@ public class OnlineActivity extends Activity {
         }
 
         updateRepositoriesList(repositories, itemsPerPage);
+        syncOfflineRecords(repositories, realm);
     }
 
     /**
      * Get the URL for loading the current page data
      *
-     * @param url domain and API endpoint URL
+     * @param url          domain and API endpoint URL
      * @param currentPage  the number of the current page
      * @param itemsPerPage number of items loaded in a single request
      * @return a string representing the URL with proper parameters
@@ -200,8 +213,8 @@ public class OnlineActivity extends Activity {
      * Check if additional repositories should be requested.
      * If so, load the next page data and disable scroll listener.
      *
-     * @param lastIndex  the current last visible item index
-     * @param totalCount total number of items in data set
+     * @param lastIndex     the current last visible item index
+     * @param totalCount    total number of items in data set
      * @param autoloadLimit start loading next page when this index is reached by scrolling
      */
     private void checkForListUpdates(int lastIndex, int totalCount, int autoloadLimit) {
@@ -216,5 +229,29 @@ public class OnlineActivity extends Activity {
         }
 
         Log.d(LOG_TAG, logMessage);
+    }
+
+    private void syncOfflineRecords(ArrayList<RepositoryObject> repositories, Realm realm) {
+
+        for (int i = 0; i < repositories.size(); i++) {
+            RepositoryObject repository = repositories.get(i);
+            checkAndStoreRecord(repository, realm);
+        }
+    }
+
+    private void checkAndStoreRecord(final RepositoryObject repository, Realm realm) {
+
+        RepositoryObject storedRecord = realm.where(RepositoryObject.class).equalTo("id", repository.getId()).findFirst();
+
+        if (storedRecord == null) {
+            realm.executeTransaction(new Realm.Transaction() {
+
+                 @Override
+                 public void execute(Realm realm) {
+                     realm.insert(repository);
+                 }
+            });
+            Log.d(LOG_TAG, "Added new repository object: " + repository.getName() + " - " + repository.getId());
+        }
     }
 }
