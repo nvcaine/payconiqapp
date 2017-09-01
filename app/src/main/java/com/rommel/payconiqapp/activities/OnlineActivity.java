@@ -7,6 +7,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
@@ -27,9 +28,10 @@ public class OnlineActivity extends Activity {
 
     private static String LOG_TAG = OnlineActivity.class.getName();
 
-    private ListView repositoresList;
-    private RepositoriesAdapter adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
+    private ListView repositoriesList;
+    private RepositoriesAdapter adapter;
     private int currentPage = 1;
+    private RequestQueue requestQueue;
 
     /**
      * Scroll listener used for loading subsequent repositories.
@@ -44,7 +46,7 @@ public class OnlineActivity extends Activity {
         @Override
         public void onScroll(AbsListView absListView, int firstIndex, int visibleCount, int totalCount) {
 
-            checkForListUpdates(repositoresList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
+            checkForListUpdates(repositoriesList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
         }
     };
 
@@ -63,8 +65,10 @@ public class OnlineActivity extends Activity {
      */
     private void initUI() {
 
-        repositoresList = (ListView) findViewById(R.id.repositories_list);
-        repositoresList.setAdapter(adapter);
+        adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
+        repositoriesList = (ListView) findViewById(R.id.repositories_list);
+        repositoriesList.setAdapter(adapter);
+        requestQueue = RequestUtil.getNewRequestQueue(this);
 
         loadRepositories(currentPage);
     }
@@ -77,14 +81,14 @@ public class OnlineActivity extends Activity {
     private void loadRepositories(int currentPage) {
 
         String url = getURLWithParams(SettingsUtil.REPOS_URL, currentPage, SettingsUtil.ITEMS_PER_PAGE);
-        RequestUtil.performRequest(url, new IRequestCallback<JSONArray>() {
+        RequestUtil.performRequest(url, requestQueue, new IRequestCallback<JSONArray>() {
 
             @Override
             public void executeCallback(JSONArray jsonArray) {
 
                 parseAndUpdateRepositories(jsonArray, SettingsUtil.ITEMS_PER_PAGE);
             }
-        }, this);
+        });
     }
 
     /**
@@ -169,7 +173,7 @@ public class OnlineActivity extends Activity {
 
         if (repositories != null) {
             adapter.updateDataSet(repositories);
-            repositoresList.setOnScrollListener(scrollListener);
+            repositoriesList.setOnScrollListener(scrollListener);
 
             checkIfDataFullyLoaded(repositories, itemsPerPage);
             Toast.makeText(this, "Loading complete", Toast.LENGTH_SHORT).show();
@@ -188,7 +192,7 @@ public class OnlineActivity extends Activity {
         if (repositories != null && (repositories.size() < itemsPerPage || repositories.size() == 0)) {
 
             Toast.makeText(this, "End of list reached", Toast.LENGTH_SHORT).show();
-            repositoresList.setOnScrollListener(null);
+            repositoriesList.setOnScrollListener(null);
         }
     }
 
@@ -207,7 +211,7 @@ public class OnlineActivity extends Activity {
         if (lastIndex >= totalCount - autoloadLimit) {
             logMessage = "Load additional items.";
             Toast.makeText(this, "Loading page " + (++currentPage), Toast.LENGTH_SHORT).show();
-            repositoresList.setOnScrollListener(null);
+            repositoriesList.setOnScrollListener(null);
             loadRepositories(currentPage);
         }
 

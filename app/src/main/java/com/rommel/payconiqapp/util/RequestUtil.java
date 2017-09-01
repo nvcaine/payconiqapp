@@ -19,17 +19,13 @@ public class RequestUtil {
 
     private static String LOG_TAG = RequestUtil.class.getName();
 
-    private static RequestQueue requestQueue;
-
     /**
      * Perform GET request
      * @param url the URL to call
      * @param callback the handler to be executed on success
-     * @param context context for initializing Volley
+     * @param requestQueue RequestQueue instance to add request to
      */
-    public static void performRequest(final String url, final IRequestCallback<JSONArray> callback, Context context) {
-
-        requestQueue = Volley.newRequestQueue(context); // do not init every time
+    public static void performRequest(final String url, RequestQueue requestQueue, final IRequestCallback<JSONArray> callback) {
 
         JsonArrayRequest jsonRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
@@ -45,5 +41,15 @@ public class RequestUtil {
 
         requestQueue.add(jsonRequest);
         Log.d(LOG_TAG, "Request sent to URL: " + url);
+    }
+
+    /**
+     * Create queue for sending request
+     * @param context context for initializing Volley
+     * @return a RequestQueue object
+     */
+    public static RequestQueue getNewRequestQueue(Context context) {
+
+        return Volley.newRequestQueue(context);
     }
 }
