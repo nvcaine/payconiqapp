@@ -3,9 +3,13 @@ package com.rommel.payconiqapp.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.rommel.payconiqapp.R;
+import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
+
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -17,6 +21,8 @@ public class OfflineActivity extends Activity {
 
     private static String LOG_TAG = OfflineActivity.class.getName();
 
+    private ListView repositoriesList;
+    private RepositoriesAdapter adapter;
     private Realm realm;
 
     @Override
@@ -26,18 +32,8 @@ public class OfflineActivity extends Activity {
 
         setContentView(R.layout.activity_offline);
 
-        realm = Realm.getDefaultInstance();
-        RealmResults<RepositoryObject> repos = realm.where(RepositoryObject.class).findAll();
-
-        if (repos.size() == 0)
-            executeRealmTransaction(realm);
-
-        for (int i = 0; i < repos.size(); i++) {
-            RepositoryObject item = repos.get(i);
-            Log.d(LOG_TAG, "Offline repo item: " + item.getName() + " - " + item.getId());
-        }
+        init();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -47,18 +43,25 @@ public class OfflineActivity extends Activity {
         realm.close();
     }
 
-    private void executeRealmTransaction(Realm realm) {
+    private void init() {
 
-        realm.executeTransaction(new Realm.Transaction() {
+        realm = Realm.getDefaultInstance();
+        RealmResults<RepositoryObject> repos = realm.where(RepositoryObject.class).findAll();
 
-            @Override
-            public void execute(Realm realm) {
-                RepositoryObject r = realm.createObject(RepositoryObject.class);
+        adapter = new RepositoriesAdapter(this, R.layout.item_repository, parseRealmResults(repos));
+        repositoriesList = (ListView) findViewById(R.id.repositories_list);
+        repositoriesList.setAdapter(adapter);
+    }
 
-                r.setName("Test repo");
-                r.setId("110110");
-            }
-        });
+    private ArrayList<RepositoryObject> parseRealmResults(RealmResults<RepositoryObject> repos) {
 
+        ArrayList<RepositoryObject> results = new ArrayList<>();
+
+        for (int i = 0; i < repos.size(); i++) {
+            RepositoryObject repo = repos.get(i);
+            results.add(repo);
+        }
+
+        return results;
     }
 }

@@ -60,7 +60,7 @@ public class OnlineActivity extends Activity {
 
         setContentView(R.layout.activity_online);
 
-        initUI();
+        init();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class OnlineActivity extends Activity {
     /**
      * Get repository list instance and add scroll listener.
      */
-    private void initUI() {
+    private void init() {
 
         adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
         repositoriesList = (ListView) findViewById(R.id.repositories_list);

@@ -9,4 +9,10 @@
         android:layout_height="wrap_content"
         android:text="Offline view" />
 
+    <ListView
+        android:id="@+id/repositories_list"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp" />
+
 </LinearLayout>
