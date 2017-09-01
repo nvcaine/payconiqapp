@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
-import com.rommel.payconiqapp.dto.RepositoryDTO;
+import com.rommel.payconiqapp.data.RepositoryObject;
 import com.rommel.payconiqapp.interfaces.IRequestCallback;
 import com.rommel.payconiqapp.util.RequestUtil;
 import com.rommel.payconiqapp.util.SettingsUtil;
@@ -27,11 +27,9 @@ public class OnlineActivity extends Activity {
 
     private static String LOG_TAG = OnlineActivity.class.getName();
 
-    private int currentPage = 1;
-
     private ListView repositoresList;
-
-    private RepositoriesAdapter adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryDTO>());
+    private RepositoriesAdapter adapter = new RepositoriesAdapter(this, R.layout.item_repository, new ArrayList<RepositoryObject>());
+    private int currentPage = 1;
 
     /**
      * Scroll listener used for loading subsequent repositories.
@@ -90,14 +88,15 @@ public class OnlineActivity extends Activity {
     }
 
     /**
-     * Convert JSONArray object to RepositoryDTO list.
+     * Convert JSONArray object to RepositoryObject list.
      * Display list.
      *
      * @param jsonArray the JSON data representing repositories
+     * @param itemsPerPage number of items loaded in a single request
      */
     private void parseAndUpdateRepositories(JSONArray jsonArray, int itemsPerPage) {
 
-        ArrayList<RepositoryDTO> repositories = null;
+        ArrayList<RepositoryObject> repositories = null;
 
         try {
             repositories = parseRepositories(jsonArray);
@@ -111,27 +110,29 @@ public class OnlineActivity extends Activity {
     /**
      * Get the URL for loading the current page data
      *
-     * @param currentPage the number of the current page
+     * @param url domain and API endpoint URL
+     * @param currentPage  the number of the current page
+     * @param itemsPerPage number of items loaded in a single request
      * @return a string representing the URL with proper parameters
      */
     private String getURLWithParams(String url, int currentPage, int itemsPerPage) {
 
-        return url + "page=" + currentPage + "&per_page=" + itemsPerPage;
+        return url + "?page=" + currentPage + "&per_page=" + itemsPerPage;
     }
 
     /**
-     * Parse a JSON object data set to a list of RepositoryDTO objects
+     * Parse a JSON object data set to a list of RepositoryObject objects
      *
      * @param data the JSON objects array
-     * @return ArrayList containing RepositoryDTO objects
+     * @return ArrayList containing RepositoryObject objects
      * @throws JSONException
      */
-    private ArrayList<RepositoryDTO> parseRepositories(JSONArray data) throws JSONException {
+    private ArrayList<RepositoryObject> parseRepositories(JSONArray data) throws JSONException {
 
-        ArrayList<RepositoryDTO> result = new ArrayList<>();
+        ArrayList<RepositoryObject> result = new ArrayList<>();
 
         for (int i = 0; i < data.length(); i++) {
-            RepositoryDTO repository = getRepositoryObjectFromJSON(data.getJSONObject(i));
+            RepositoryObject repository = getRepositoryObjectFromJSON(data.getJSONObject(i));
             result.add(repository);
         }
 
@@ -139,17 +140,17 @@ public class OnlineActivity extends Activity {
     }
 
     /**
-     * Convert JSON object to RepositoryDTO
+     * Convert JSON object to RepositoryObject
      *
      * @param data JSON data to parse
-     * @return RepositoryDTO object
+     * @return RepositoryObject object
      * @throws JSONException
      */
-    private RepositoryDTO getRepositoryObjectFromJSON(JSONObject data) throws JSONException {
+    private RepositoryObject getRepositoryObjectFromJSON(JSONObject data) throws JSONException {
 
-        RepositoryDTO result;
+        RepositoryObject result;
 
-        result = new RepositoryDTO(
+        result = new RepositoryObject(
                 data.getString("id"),
                 data.getString("name")
         );
@@ -162,8 +163,9 @@ public class OnlineActivity extends Activity {
      * Reset repositories list scroll listener.
      *
      * @param repositories repositories data set
+     * @param itemsPerPage number of items loaded in a single request
      */
-    private void updateRepositoriesList(ArrayList<RepositoryDTO> repositories, int itemsPerPage) {
+    private void updateRepositoriesList(ArrayList<RepositoryObject> repositories, int itemsPerPage) {
 
         if (repositories != null) {
             adapter.updateDataSet(repositories);
@@ -173,7 +175,13 @@ public class OnlineActivity extends Activity {
         }
     }
 
-    private void checkIfDataFullyLoaded(ArrayList<RepositoryDTO> repositories, int itemsPerPage) {
+    /**
+     * Notify user and remove scroll listener if no more data is available
+     *
+     * @param repositories current batch of repositories
+     * @param itemsPerPage number of items per page
+     */
+    private void checkIfDataFullyLoaded(ArrayList<RepositoryObject> repositories, int itemsPerPage) {
 
         if (repositories != null && (repositories.size() < itemsPerPage || repositories.size() == 0)) {
 
@@ -188,6 +196,7 @@ public class OnlineActivity extends Activity {
      *
      * @param lastIndex  the current last visible item index
      * @param totalCount total number of items in data set
+     * @param autoloadLimit start loading next page when this index is reached by scrolling
      */
     private void checkForListUpdates(int lastIndex, int totalCount, int autoloadLimit) {
 

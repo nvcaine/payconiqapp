@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.rommel.payconiqapp.R;
-import com.rommel.payconiqapp.dto.RepositoryDTO;
+import com.rommel.payconiqapp.data.RepositoryObject;
 
 import java.util.ArrayList;
 
@@ -20,9 +20,9 @@ public class RepositoriesAdapter extends BaseAdapter {
 
     private Context context;
     private int resource;
-    private ArrayList<RepositoryDTO> data;
+    private ArrayList<RepositoryObject> data;
 
-    public RepositoriesAdapter(Context context, int resource, ArrayList<RepositoryDTO> data) {
+    public RepositoriesAdapter(Context context, int resource, ArrayList<RepositoryObject> data) {
 
         super();
 
@@ -51,7 +51,7 @@ public class RepositoriesAdapter extends BaseAdapter {
     }
 
     @Override
-    public RepositoryDTO getItem(int position) {
+    public RepositoryObject getItem(int position) {
 
         return data.get(position);
     }
@@ -62,7 +62,7 @@ public class RepositoriesAdapter extends BaseAdapter {
         return position;
     }
 
-    public void updateDataSet(ArrayList<RepositoryDTO> data) {
+    public void updateDataSet(ArrayList<RepositoryObject> data) {
         this.data.addAll(data);
         this.notifyDataSetChanged();
     }
@@ -72,7 +72,7 @@ public class RepositoriesAdapter extends BaseAdapter {
      * @param view the view object
      * @param data the data to be displayed
      */
-    private void updateItemView(View view, RepositoryDTO data) {
+    private void updateItemView(View view, RepositoryObject data) {
 
         TextView repositoryIdLabel = (TextView) view.findViewById(R.id.repository_id_label);
         TextView repositoryNameLabel = (TextView) view.findViewById(R.id.repository_name_label);
