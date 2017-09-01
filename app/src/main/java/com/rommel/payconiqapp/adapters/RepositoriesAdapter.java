@@ -62,6 +62,11 @@ public class RepositoriesAdapter extends BaseAdapter {
         return position;
     }
 
+    public void updateDataSet(ArrayList<RepositoryDTO> data) {
+        this.data.addAll(data);
+        this.notifyDataSetChanged();
+    }
+
     /**
      * Set object data to item view renderer.
      * @param view the view object
