@@ -21,6 +21,10 @@ public class RealmUtil {
 
     private RealmUtil() {}
 
+    /**
+     * Singleton instance access method
+     * @return the RealmUtil instance
+     */
     public static RealmUtil getInstance() {
 
         if(instance == null) {

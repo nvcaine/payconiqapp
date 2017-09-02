@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.rommel.payconiqapp.R;
-import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
+import com.rommel.payconiqapp.data.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
 import com.rommel.payconiqapp.util.RealmUtil;
 

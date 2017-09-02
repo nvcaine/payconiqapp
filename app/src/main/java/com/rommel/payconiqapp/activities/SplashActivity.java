@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.rommel.payconiqapp.R;
-import com.rommel.payconiqapp.util.NetworkUtil;
+import com.rommel.payconiqapp.util.RequestUtil;
 
 /**
  * The initial activity displayed to the user.
@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
      */
     public void showRepoList(View view) {
         // recheck connectivity to prevent users from disabling connection after startup
-        boolean connectionAvailable = NetworkUtil.isConnected(this);
+        boolean connectionAvailable = RequestUtil.isConnected(this);
         navigateToListActivity(connectionAvailable);
     }
 
@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkConnection() {
 
-        boolean connectionAvailable = NetworkUtil.isConnected(this);
+        boolean connectionAvailable = RequestUtil.isConnected(this);
 
         updateInterface(connectionAvailable);
         Log.d(LOG_TAG, "Connection available: " + connectionAvailable);

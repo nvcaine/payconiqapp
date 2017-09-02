@@ -1,6 +1,8 @@
 package com.rommel.payconiqapp.util;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -13,11 +15,27 @@ import com.rommel.payconiqapp.interfaces.IRequestCallback;
 import org.json.JSONArray;
 
 /**
- * Helper class used to encapsulate request functionality from activity classes.
+ * Helper class used to encapsulate network functionality.
  */
 public class RequestUtil {
 
     private static String LOG_TAG = RequestUtil.class.getName();
+
+    /**
+     * Check for an available Internet connection
+     * @return true if available
+     */
+    public static boolean isConnected(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if(cm != null) {
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+
+        return false;
+    }
 
     /**
      * Perform GET request

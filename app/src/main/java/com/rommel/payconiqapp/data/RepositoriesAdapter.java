@@ -1,4 +1,4 @@
-package com.rommel.payconiqapp.adapters;
+package com.rommel.payconiqapp.data;
 
 import android.app.Activity;
 import android.content.Context;

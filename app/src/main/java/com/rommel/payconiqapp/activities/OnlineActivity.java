@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.rommel.payconiqapp.R;
-import com.rommel.payconiqapp.adapters.RepositoriesAdapter;
+import com.rommel.payconiqapp.data.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
 import com.rommel.payconiqapp.interfaces.IRequestCallback;
 import com.rommel.payconiqapp.util.RealmUtil;
