@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/main_description"
-        android:layout_above="@+id/splash_online_button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="41dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
         android:padding="20dp" />
 
     <Button
@@ -18,9 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/online_button_label"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:onClick="showRepoList" />
@@ -30,11 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/offline_button_label"
-        android:layout_alignTop="@+id/splash_online_button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:onClick="showRepoList"/>
 
-</RelativeLayout>
+</LinearLayout>

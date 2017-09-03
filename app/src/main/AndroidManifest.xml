@@ -11,6 +11,12 @@
         android:theme="@style/AppTheme"
         android:name=".PayconiqApp">
 
+        <receiver android:name=".util.NetworkStateReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

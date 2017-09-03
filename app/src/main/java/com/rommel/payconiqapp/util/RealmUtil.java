@@ -58,6 +58,12 @@ public class RealmUtil {
         }
     }
 
+
+    public static void close() {
+
+        instance.realm.close();
+    }
+
     /**
      * Check if a record has already been saved. If not, it is added to offline records.
      * @param repository a RepositoryObject item
@@ -76,11 +82,6 @@ public class RealmUtil {
             });
             Log.d(LOG_TAG, "Added new repository object: " + repository.getName() + " - " + repository.getId());
         }
-    }
-
-    public static void close() {
-
-        instance.realm.close();
     }
 
     /**

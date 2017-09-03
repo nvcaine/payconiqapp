@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.rommel.payconiqapp.R;
+import com.rommel.payconiqapp.interfaces.INetworkStateUpdateCallback;
+import com.rommel.payconiqapp.util.NetworkUtil;
 import com.rommel.payconiqapp.util.RequestUtil;
 
 /**
@@ -40,6 +42,20 @@ public class SplashActivity extends AppCompatActivity {
 
         initInterface();
         checkConnection();
+
+        NetworkUtil.getInstance().setStateChangeHandler(new INetworkStateUpdateCallback() {
+            @Override
+            public void onConnect() {
+                Log.d(LOG_TAG, "### Connected in activity");
+                updateInterface(true);
+            }
+
+            @Override
+            public void onDisconnect() {
+                Log.d(LOG_TAG, "### Disconnected in activity");
+                updateInterface(false);
+            }
+        });
     }
 
     private void checkConnection() {
@@ -68,6 +84,9 @@ public class SplashActivity extends AppCompatActivity {
         if (connectionAvailable) {
             onlineButton.setVisibility(View.VISIBLE);
             offlineButton.setVisibility(View.GONE);
+        } else {
+            onlineButton.setVisibility(View.GONE);
+            offlineButton.setVisibility(View.VISIBLE);
         }
     }
 
