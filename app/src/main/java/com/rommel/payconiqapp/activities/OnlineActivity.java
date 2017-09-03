@@ -7,10 +7,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.rommel.payconiqapp.R;
 import com.rommel.payconiqapp.data.RepositoriesAdapter;
 import com.rommel.payconiqapp.data.RepositoryObject;
-import com.rommel.payconiqapp.interfaces.IRequestCallback;
+import com.rommel.payconiqapp.interfaces.ISimpleCallback;
+import com.rommel.payconiqapp.util.AlertUtil;
 import com.rommel.payconiqapp.util.RealmUtil;
 import com.rommel.payconiqapp.util.RequestUtil;
 import com.rommel.payconiqapp.util.SettingsUtil;
@@ -31,6 +33,9 @@ public class OnlineActivity extends AppCompatActivity {
     private int currentPage = 1;
     private RequestQueue requestQueue;
 
+    // used to prevent auto-invoking the scroll listener in case an alert is displayed
+    private boolean receivedError = false;
+
     /**
      * Scroll listener used for loading subsequent repositories.
      * A variable is used to disable scroll listening while loading next page.
@@ -44,7 +49,11 @@ public class OnlineActivity extends AppCompatActivity {
         @Override
         public void onScroll(AbsListView absListView, int firstIndex, int visibleCount, int totalCount) {
 
-            checkForListUpdates(repositoriesList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
+            if (!receivedError) {
+                checkForListUpdates(repositoriesList.getLastVisiblePosition(), totalCount, SettingsUtil.AUTOLOAD_LIMIT);
+            } else {
+                receivedError = false;
+            }
         }
     };
 
@@ -84,15 +93,29 @@ public class OnlineActivity extends AppCompatActivity {
      *
      * @param currentPage the current page index
      */
-    private void loadRepositories(int currentPage) {
+    private void loadRepositories(final int currentPage) {
 
         String url = getURLWithParams(SettingsUtil.REPOS_URL, currentPage, SettingsUtil.ITEMS_PER_PAGE);
-        RequestUtil.performRequest(url, requestQueue, new IRequestCallback<JSONArray>() {
+        RequestUtil.performRequest(url, requestQueue, new ISimpleCallback<JSONArray>() {
 
             @Override
             public void executeCallback(JSONArray jsonArray) {
 
                 parseAndUpdateRepositories(jsonArray, SettingsUtil.ITEMS_PER_PAGE);
+                OnlineActivity.this.currentPage++;
+            }
+        }, new ISimpleCallback<VolleyError>() {
+            @Override
+            public void executeCallback(VolleyError volleyError) {
+                AlertUtil.showSimpleAlert(OnlineActivity.this,
+                        "Error loading data:\n\n" + volleyError.getMessage(),
+                        new ISimpleCallback<Object>() {
+                            @Override
+                            public void executeCallback(Object result) {
+                                receivedError = true;
+                                repositoriesList.setOnScrollListener(scrollListener);
+                            }
+                        });
             }
         });
     }
@@ -213,7 +236,7 @@ public class OnlineActivity extends AppCompatActivity {
     private void checkForListUpdates(int lastIndex, int totalCount, int autoloadLimit) {
 
         if (lastIndex >= totalCount - autoloadLimit) {
-            Toast.makeText(this, "Loading page " + (++currentPage), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Loading page " + currentPage, Toast.LENGTH_SHORT).show();
             repositoriesList.setOnScrollListener(null);
             loadRepositories(currentPage);
         }

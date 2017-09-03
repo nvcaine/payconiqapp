@@ -10,7 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.rommel.payconiqapp.interfaces.IRequestCallback;
+import com.rommel.payconiqapp.interfaces.ISimpleCallback;
 
 import org.json.JSONArray;
 
@@ -43,7 +43,9 @@ public class RequestUtil {
      * @param callback the handler to be executed on success
      * @param requestQueue RequestQueue instance to add request to
      */
-    public static void performRequest(final String url, RequestQueue requestQueue, final IRequestCallback<JSONArray> callback) {
+    public static void performRequest(final String url, RequestQueue requestQueue,
+                                      final ISimpleCallback<JSONArray> callback,
+                                      final ISimpleCallback<VolleyError> errorCallback) {
 
         JsonArrayRequest jsonRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
@@ -53,6 +55,7 @@ public class RequestUtil {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                errorCallback.executeCallback(volleyError);
                 Log.e(LOG_TAG, "Error sending request to " + url + ": " + volleyError.getMessage());
             }
         });
