@@ -1,17 +1,27 @@
 <resources>
-    <string name="app_name">PayconiqApp</string>
+    <string name="app_name">Payconiq App</string>
 
     <!-- Splash activity -->
-    <string name="main_description">
-        Welcome to Romuald\'s implementation of the Payconiq assignment.\nFeel free to test it.
+    <string name="splash_activity_description">
+        Welcome to Romuald Halasz\'s implementation of the Payconiq assignment.
+        The app monitors network connectivity changes and updates the main interface accordingly.
     </string>
-    <string name="online_button_label">Load data</string>
+    <string name="online_button_label">Load repositories</string>
     <string name="offline_button_label">Proceed offline</string>
 
     <!-- Online activity -->
     <string name="online_activity_title">Online view</string>
+    <string name="online_activity_description">
+        Scroll to the bottom of the list to load additional items.
+        Items are loaded 15 at a time and they are cross-checked with offline data.
+        If a repository item is not stored locally, it is saved so it can be viewed in offline mode.
+    </string>
 
     <!-- Offline activity -->
     <string name="offline_activity_title">Offline view</string>
+    <string name="offline_activity_description">
+        Cached repository records.
+        If no records have been previously downloaded, no items will be visible.
+    </string>
 
 </resources>

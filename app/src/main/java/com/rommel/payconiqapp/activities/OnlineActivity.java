@@ -1,7 +1,7 @@
 package com.rommel.payconiqapp.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * The activity the user is redirected after initialization, if an Internet connection is available.
  */
-public class OnlineActivity extends Activity {
+public class OnlineActivity extends AppCompatActivity {
 
     private ListView repositoriesList;
     private RepositoriesAdapter adapter;
@@ -136,7 +136,7 @@ public class OnlineActivity extends Activity {
      *
      * @param data the JSON objects array
      * @return ArrayList containing RepositoryObject objects
-     * @throws JSONException
+     * @throws JSONException thrown in case an item is missing 'id' or 'name'
      */
     private ArrayList<RepositoryObject> parseRepositories(JSONArray data) throws JSONException {
 
@@ -155,7 +155,7 @@ public class OnlineActivity extends Activity {
      *
      * @param data JSON data to parse
      * @return RepositoryObject object
-     * @throws JSONException
+     * @throws JSONException thrown in case data object does not have 'id' and 'name'
      */
     private RepositoryObject getRepositoryObjectFromJSON(JSONObject data) throws JSONException {
 

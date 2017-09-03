@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.rommel.payconiqapp.R;
-import com.rommel.payconiqapp.data.RepositoryObject;
 
 import java.util.ArrayList;
 

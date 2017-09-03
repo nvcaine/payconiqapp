@@ -1,9 +1,8 @@
 package com.rommel.payconiqapp.interfaces;
 
 /**
- * Created by Rommel on 9/3/2017.
+ * Interface for defining network state updates handlers.
  */
-
 public interface INetworkStateUpdateCallback {
 
     void onConnect();

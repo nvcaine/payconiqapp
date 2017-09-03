@@ -6,9 +6,10 @@
     android:orientation="vertical">
 
     <TextView
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Online view" />
+        android:text="@string/online_activity_description" />
 
     <ListView
         android:id="@+id/repositories_list"

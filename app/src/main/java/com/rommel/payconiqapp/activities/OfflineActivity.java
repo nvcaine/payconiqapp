@@ -1,7 +1,7 @@
 package com.rommel.payconiqapp.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.rommel.payconiqapp.R;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * The activity displayed if no Internet connection is available.
  */
-public class OfflineActivity extends Activity {
+public class OfflineActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
