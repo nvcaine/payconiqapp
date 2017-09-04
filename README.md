@@ -4,7 +4,7 @@ Small demo for loading repositories and saving offline data.
 
 ## Activities
 
-- **SpashActivity**: initial page which prompts the user to load data if a connection is available, or view offline stored data
+- **SplashActivity**: initial page which prompts the user to load data if a connection is available, or view offline stored data
 - **OnlineActivity**: load repositories 15 at a time and add them to a list; when the third item from the end is visible, load the next page
 - **OfflineActivity**: show locally stored repository records
 
